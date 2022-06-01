@@ -531,9 +531,15 @@ TEST(notnull_tests, TestMakeNotNull)
         EXPECT_TRUE(*x == 42);
     }
 
+    // Move-only T (uncopyable)
     {
-        auto nnupi = make_not_null(std::make_unique<int>(42));
+        // Construct
+        auto nnupi(make_not_null(std::make_unique<int>(42)));
         EXPECT_TRUE(*nnupi == 42);
+
+        // Assign
+        nnupi = make_not_null(std::make_unique<int>(88));
+        EXPECT_TRUE(*nnupi == 88);
     }
 
     const auto terminateHandler = std::set_terminate([] {
