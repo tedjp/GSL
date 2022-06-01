@@ -234,6 +234,16 @@ TEST(notnull_tests, TestNotNullConstructors)
         EXPECT_DEATH(helper(return_pointer()), expected);
         EXPECT_DEATH(helper_const(return_pointer()), expected);
     }
+
+    {
+        // from move-only pointer (eg. std::unique_ptr)
+        not_null<std::unique_ptr<int>> nnupi(std::make_unique<int>(1));
+        EXPECT_TRUE(*nnupi == 1);
+
+        EXPECT_DEATH(
+            *not_null<std::unique_ptr<int>>(std::unique_ptr<int>()) = 1,
+            expected);
+    }
 }
 
 template <typename T>
@@ -512,6 +522,11 @@ TEST(notnull_tests, TestMakeNotNull)
         helper_const(make_not_null(p));
 
         EXPECT_TRUE(*x == 42);
+    }
+
+    {
+        auto nnupi = make_not_null(std::make_unique<int>(42));
+        EXPECT_TRUE(*nnupi == 42);
     }
 
     const auto terminateHandler = std::set_terminate([] {
