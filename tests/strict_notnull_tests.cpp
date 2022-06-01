@@ -14,6 +14,8 @@
 //
 ///////////////////////////////////////////////////////////////////////////////
 
+#include <memory>
+
 #include <gsl/pointers> // for not_null, operator<, operator<=, operator>
 #include <gtest/gtest.h>
 
@@ -130,6 +132,11 @@ TEST(strict_notnull_tests, TestStrictNotNull)
         strict_not_null<int*> p{nullptr};
     }
 #endif
+}
+
+TEST(strict_notnull_tests, TestStrictNotNullUniquePtr)
+{
+    strict_not_null<unique_ptr<int>> supi(std::make_unique<int>(4));
 }
 
 #if defined(__cplusplus) && (__cplusplus >= 201703L)
