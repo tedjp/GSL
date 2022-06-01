@@ -24,6 +24,7 @@
 #include <memory>       // for shared_ptr, unique_ptr
 #include <system_error> // for hash
 #include <type_traits>  // for enable_if_t, is_convertible, is_assignable
+#include <utility>      // for swap
 
 #if !defined(GSL_NO_IOSTREAMS)
 #include <iosfwd> // for ostream
@@ -129,6 +130,21 @@ public:
     void operator[](std::ptrdiff_t) const = delete;
 
 private:
+    // determine whether swap is noexcept, finding swap(T&, T&) either by ADL
+    // or std::swap (swap via temporary).
+    static constexpr bool is_swap_noexcept()
+    {
+        using std::swap;
+        return noexcept(swap(ptr_, ptr_));
+    }
+
+    friend void swap(not_null<T>& left, not_null<T>& right)
+        noexcept(is_swap_noexcept())
+    {
+        using std::swap;
+        swap(left.ptr_, right.ptr_);
+    }
+
     T ptr_;
 };
 

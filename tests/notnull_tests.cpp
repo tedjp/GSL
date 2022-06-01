@@ -596,3 +596,21 @@ TEST(notnull_tests, TestStdHash)
     EXPECT_FALSE(hash_nn(nn) == hash_intptr(&y));
     EXPECT_FALSE(hash_nn(nn) == hash_intptr(nullptr));
 }
+
+TEST(notnull_tests, TestSwap)
+{
+    using std::swap;
+
+    // Ensure that swap() is noexcept(true) (when noexcept(swap(T, T)) is true)
+    {
+        int v;
+        not_null left(&v);
+        not_null right(&v);
+        static_assert(noexcept(swap(left, right)));
+    }
+    {
+        not_null p1(std::make_unique<int>(1));
+        not_null p2(std::make_unique<int>(2));
+        static_assert(noexcept(swap(p1, p2)));
+    }
+}
