@@ -314,6 +314,13 @@ TEST(notnull_tests, TestNotNullAssignment)
 
     int* q = nullptr;
     EXPECT_DEATH(p = not_null<int*>(q), expected);
+
+    // Assignment from T&&
+    {
+        std::unique_ptr<int> upi;
+        not_null<std::unique_ptr<int>> nnupi(std::make_unique<int>(1));
+        nnupi = std::make_unique<int>(4);
+    }
 }
 
 TEST(notnull_tests, TestNotNullRawPointerComparison)
