@@ -508,6 +508,26 @@ TEST(notnull_tests, TestNotNullConstructorTypeDeduction)
 }
 #endif // #if defined(__cplusplus) && (__cplusplus >= 201703L)
 
+TEST(notnull_tests, TestImplicitConversions)
+{
+    struct Base
+    {
+        virtual ~Base() = default;
+    };
+
+    struct Derived : public Base
+    {
+    };
+
+    Derived d;
+
+    not_null<Base*> b1(&d);
+    b1 = &d;
+
+    not_null<std::unique_ptr<Base>> nnupb(std::make_unique<Derived>());
+    nnupb = std::make_unique<Derived>();
+}
+
 TEST(notnull_tests, TestMakeNotNull)
 {
     {
