@@ -107,7 +107,7 @@ public:
     not_null& operator=(not_null&& other) = default;
 
     // Assignment from T or convertible-to-T
-    template <typename U, typename = std::enable_if_t<!std::is_convertible<U, T>::value>>
+    template <typename U, typename = std::enable_if_t<std::is_convertible<std::add_rvalue_reference_t<U>, T>::value>>
     not_null& operator=(U&& ptr)
     {
         Expects(ptr != nullptr);
